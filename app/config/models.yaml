@@ -3,4 +3,4 @@ ocr:
   # Path to the directory containing the downloaded OCR model weights and tokenizer files.
   # This directory should contain files like `config.json`, `tokenizer.json`, `pytorch_model.bin` etc.
   modelPath: "app/code/data/" # IMPORTANT: Replace with the actual path to your downloaded OCR model weights
-  downloadUrl:  "https://huggingface.co/stepfun-ai/GOT-OCR-2.0-hf/resolve/main/model.safetensors?download=true"
+  downloadUrl:  "https://huggingface.co/stepfun-ai/GOT-OCR2_0/resolve/main/model.safetensors?download=true"
