@@ -86,7 +86,7 @@ OCRBrain 是一个专为 **离线环境** 设计的高性能光学字符识别�
 
 ```bash
 # 1. 克隆代码
-git clone [YOUR_REPO_URL_HERE] # 请替换为实际的项目仓库URL
+git clone https://github.com/NovemberXI/OCRBrain-main.git # 请替换为实际的项目仓库URL
 cd OCRBrain-main # 确保进入项目根目录
 
 # 2. 创建环境 (Python 3.10)
@@ -106,11 +106,12 @@ pip install -r app/code/requirements.txt
     ocr:
       modelPath: "app/code/data" # 替换为您的模型实际路径
     ```
+    若本地没有模型文件，会自动从huggleface下载
 
 ### 3. 数据准备 (Data Preparation)
 
 您可以准备图像文件（如 `.jpg`, `.png`）或 PDF 文件作为 OCR 输入。
-*   **存放位置**: **建议**将测试文件放置在 `app/code/input/` 目录**（需自行创建）**。
+*   **存放位置**: **建议**将测试文件放置在 `app/code/input/` 目录****。
 
 ### 4. 运行 OCR (Usage)
 
@@ -120,7 +121,7 @@ OCRBrain **提供**命令行接口进行 OCR 处理，**支持**图像、PDF 文
 
 *   `-i` 或 `--input`: **必需**。**指定**输入路径，**支持**单个图像文件、单个 PDF 文件，**或**一个包含图片/PDF 的目录。
 *   `-o` 或 `--output_dir`: **可选**。**指定** OCR 结果的输出目录。**默认值为**项目根目录下的 `out` 文件夹。输出的 JSON 文件**采用** `原始文件名.原始扩展名.json` 的格式命名，**彻底防止**同名但不同类型文件的结果被覆盖。
-*   `--ocrtype`: **可选**。**指定** OCR 处理的类型。**当前支持 `plain` (默认值，纯文本提取)**。未来**将扩展支持**更多类型（例如 `form`, `table` 等），具体可查看 `app/code/core/OcrService.py` 中的 `performOcr` 函数实现。
+*   `--ocrtype`: **可选**。**指定** OCR 处理的类型。**当前支持 `plain` (默认值，纯文本提取)**。未来**将扩展支持**更多类型（例如 `form`, `table` 等）
 
 #### 场景示例
 
@@ -128,24 +129,14 @@ OCRBrain **提供**命令行接口进行 OCR 处理，**支持**图像、PDF 文
 
 ```bash
 # 运行命令 (-i 指定输入图像文件路径)
-python app/code/main.py -i "app/code/input/example.jpg"
-# 结果将保存到项目根目录的 out/example.jpg.json
-
-# 指定输出目录
-python app/code/main.py -i app/code/input/1.webp -o results
-# 结果将保存到 results/1.webp.json
+python app/code/main.py -i "app/code/input/example.jpg" -o results
 ```
 
 **场景 B: 对单个 PDF 文件执行 OCR**
 
 ```bash
 # 运行命令 (-i 指定输入 PDF 文件路径)
-python app/code/main.py -i "app/code/input/document.pdf"
-# 结果将保存到项目根目录的 out/document.pdf.json
-
-# 指定输出目录
-python app/code/main.py -i app/code/input/1.pdf -o results
-# 结果将保存到 results/1.pdf.json
+python app/code/main.py -i "app/code/input/document.pdf" -o results
 ```
 
 **场景 C: 对目录下的多个文件执行 OCR**
@@ -153,11 +144,7 @@ python app/code/main.py -i app/code/input/1.pdf -o results
 ```bash
 # 运行命令 (-i 指定包含图片/PDF的目录)
 python app/code/main.py -i "app/code/input/"
-# 目录下所有支持的文件均进行 OCR，结果分别保存到 out/ 目录下
-
-# 指定输出目录
-python app/code/main.py -i "app/code/input/" -o batch_results
-# 目录下所有支持的文件均进行 OCR，结果分别保存到 batch_results/ 目录下
+# 目录下所有支持的文件均进行 OCR
 ```
 
 **场景 D: 指定 OCR 类型**

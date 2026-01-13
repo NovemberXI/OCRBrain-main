@@ -4,6 +4,7 @@ import fitz # PyMuPDF
 from PIL import Image
 import requests # 导入 requests 库
 from utils.LogTool import LogTool
+from tqdm import tqdm
 
 class FileTool:
     @staticmethod
@@ -67,31 +68,46 @@ class FileTool:
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(destinationPath), exist_ok=True)
 
-        if FileTool.exists(destinationPath):
+        if os.path.exists(destinationPath):
             LogTool.info(f"文件已存在: {destinationPath}")
             return True
 
         LogTool.info(f"开始从 {url} 下载文件到 {destinationPath}...")
         try:
             response = requests.get(url, stream=True)
-            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+            response.raise_for_status()
 
-            # total_size = int(response.headers.get('content-length', 0)) # 暂时不显示进度条
-            # downloaded_size = 0
-
-            with open(destinationPath, 'wb') as f:
+            # 获取文件总大小
+            total_size = int(response.headers.get('content-length', 0))
+            
+            # 使用 tqdm 创建进度条
+            with open(destinationPath, 'wb') as f, tqdm(
+                desc=os.path.basename(destinationPath),  # 显示文件名
+                total=total_size,                       # 总大小
+                unit='B',                               # 单位
+                unit_scale=True,                        # 自动缩放单位 (KB, MB, GB)
+                unit_divisor=1024,                      # 除数为1024 (二进制单位)
+                ncols=80,                               # 进度条宽度
+                bar_format='{desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
+            ) as pbar:
+                
                 for chunk in response.iter_content(chunk_size=8192):
-                    if chunk: # filter out keep-alive new chunks
+                    if chunk:
                         f.write(chunk)
-                        # downloaded_size += len(chunk)
-                        # if total_size:
-                        #     progress = (downloaded_size / total_size) * 100
-                        #     LogTool.info(f"下载进度: {progress:.2f}%")
+                        pbar.update(len(chunk))  # 更新进度条
+
             LogTool.info(f"文件下载成功: {destinationPath}")
             return True
+            
         except requests.exceptions.RequestException as e:
             LogTool.error(f"下载文件失败: {e}", e)
+            # 下载失败时删除不完整的文件
+            if os.path.exists(destinationPath):
+                os.remove(destinationPath)
             return False
         except Exception as e:
             LogTool.error(f"处理下载文件时发生未知错误: {e}", e)
+            # 下载失败时删除不完整的文件
+            if os.path.exists(destinationPath):
+                os.remove(destinationPath)
             return False
