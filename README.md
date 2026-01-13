@@ -1,7 +1,7 @@
-# OCRBrain (Project Gemini) - 离线智能 OCR 底座
+# OCRBrain
 **Building the Visual Perception Core for Offline AI Agents**
 
-OCRBrain 是一个专为 **离线环境 (Air-gapped)** 设计的高性能光学字符识别引擎。它不仅是文字识别工具，更是为本地化 AI Agent 打造的**“视觉感知核心”**。
+OCRBrain 是一个专为 **离线环境** 设计的高性能光学字符识别引擎。它不仅是文字识别工具，更是为本地化 AI Agent 打造的**“视觉感知核心”**。
 
 ---
 
