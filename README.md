@@ -19,12 +19,12 @@ OCRBrain 是一个专为 **离线环境** 设计的高性能光学字符识别�
 
 本项目核心技术栈如下：
 
-*   **OCR 核心引擎**: 基于 `transformers` 库，**使用`GOTQwenForCausalLM`模型架构**，**结合**了强大的 Qwen 系列语言模型与先进的视觉编码器，**实现**多模态理解能力。
+*   **OCR 核心引擎**: 基于 `transformers` 库，**使用`GOTQwenForCausalLM`模型架构**，**结合** Qwen 系列语言模型与先进的视觉编码器，**实现**多模态理解能力。
     *   模型权重与配置**存储于** `app/code/data/` 目录。
 
 ### 模型架构概述
 
-本项目**采用**的多模态模型架构**包含**以下两个核心组成部分：
+本项目**采用**多模态大语言模型**包含**以下两个核心组成部分：
 
 1.  **视觉编码器 (Vision Encoder)**:
     *   **功能**: **负责**从输入的图像中提取高维语义特征。
@@ -33,7 +33,7 @@ OCRBrain 是一个专为 **离线环境** 设计的高性能光学字符识别�
     *   **输出**: 图像的语义特征表示（高维特征向量序列）。
 
 2.  **语言模型 (Language Model - LLM)**:
-    *   **模型**: 基于Qwen 系列的模型，具备上下文理解与文本生成能力。
+    *   **模型**: 基于Qwen 系列的模型，模型参数量0.7b，具备上下文理解与文本生成能力。
     *   **功能**: **接收**视觉编码器提取的图像特征，并**结合**由 `conversation` 模块生成的文本指令 (prompt)，**进而生成 OCR 结果文本**。
     *   **实现**: `ocr_model.py` **封装了`GOTQwenForCausalLM`模型的加载与 OCR 推理逻辑**。
     *   **输入**: 视觉编码器输出的图像特征，以及**结构化文本 prompt**。
@@ -121,7 +121,7 @@ OCRBrain **提供**命令行接口进行 OCR 处理，**支持**图像、PDF 文
 
 *   `-i` 或 `--input`: **必需**。**指定**输入路径，**支持**单个图像文件、单个 PDF 文件，**或**一个包含图片/PDF 的目录。
 *   `-o` 或 `--output_dir`: **可选**。**指定** OCR 结果的输出目录。**默认值为**项目根目录下的 `out` 文件夹。输出的 JSON 文件**采用** `原始文件名.原始扩展名.json` 的格式命名，**彻底防止**同名但不同类型文件的结果被覆盖。
-*   `--ocrtype`: **可选**。**指定** OCR 处理的类型。**当前支持 `plain` (默认值，纯文本提取)**。未来**将扩展支持**更多类型（例如 `form`, `table` 等）
+*   `--ocrtype`: **可选**。**指定** OCR 处理的类型。**当前支持 `plain` (默认值，纯文本提取),`format`(结构化信息提取)**。未来**将扩展支持**更多类型（例如 `table` 等）
 
 #### 场景示例
 
@@ -150,11 +150,12 @@ python app/code/main.py -i "app/code/input/"
 **场景 D: 指定 OCR 类型**
 
 ```bash
-# 使用默认的 'plain' OCR 类型 (无需明确指定)
+# 'plain' 纯文本类型（默认）
 python app/code/main.py -i "app/code/input/example.jpg" --ocrtype plain
 
-# 未来支持其他 OCR 类型 (例如 'form')
-# python app/code/main.py -i "app/code/input/form_document.jpg" --ocrtype form
+# 'format' 结构化类型
+python app/code/main.py -i "app/code/input/example.jpg" --ocrtype format
+
 ```
 
 ---
@@ -181,7 +182,8 @@ python app/code/main.py -i "app/code/input/example.jpg" --ocrtype plain
 
 **注意：本项目目前处于 Phase 1 初期，OCR 功能正在持续完善。**
 
-本项目**采用**大型语言模型 (LLM) 与视觉模型。**因此，对计算资源要求较高**，在 CPU 或性能受限的 GPU 环境下，**OCR 推理速度慢于传统轻量级 OCR 方案**。我们**正持续投入**资源进行模型优化与推理流程改进，以提升整体性能。
+1.本项目**采用**大型语言模型 (LLM) 与视觉模型。**因此，对计算资源要求较高**，在 CPU 或性能受限的 GPU 环境下，**OCR 推理速度慢于传统轻量级 OCR 方案**。
+2.在某些情况下，如文字重叠，字迹模糊等，容易识别错误。
 
 ---
 
