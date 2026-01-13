@@ -17,10 +17,9 @@ OCRBrain 是一个专为 **离线环境** 设计的高性能光学字符识别�
 
 ## 🧠 技术架构与模型详解 (Technical Architecture & Model Details)
 
-本项目**采用** Python Sidecar 模式，核心技术栈如下：
+本项目核心技术栈如下：
 
-*   **OCR 核心引擎**: 基于 `transformers` 库，**使用`GOTQwenForCausalLM`模型架构**。此架构**结合**了强大的 Qwen 系列语言模型与先进的视觉编码器，**实现**多模态理解能力。
-    *   **推理优化**: 当前模型主要侧重于准确性，性能优化**正在进行中**。
+*   **OCR 核心引擎**: 基于 `transformers` 库，**使用`GOTQwenForCausalLM`模型架构**，**结合**了强大的 Qwen 系列语言模型与先进的视觉编码器，**实现**多模态理解能力。
     *   模型权重与配置**存储于** `app/code/data/` 目录。
 
 ### 模型架构概述

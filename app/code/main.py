@@ -73,8 +73,6 @@ def main():
         sys.exit(1)
     
     # 构造完整的模型文件路径
-    # downloadUrl 格式为 https://.../model.safetensors?download=true
-    # 需要提取出 model.safetensors
     fileName = os.path.basename(downloadUrl.split('?')[0])
     modelFilePath = os.path.join(modelDirPath, fileName) # e.g., "app/code/data/model.safetensors"
 
