@@ -34,6 +34,8 @@ app/logs/*
 *.log
 tmp/
 # 忽略 input 目录
-app/code/input/
+app/code/input/*
 # 忽略 results 目录
-results
+results/*
+# 忽略 参数文件 目录
+app/code/data/*
