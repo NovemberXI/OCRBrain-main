@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Env ---
+venv/
+.venv/
+env/
+
+# --- Project Specific ---
+# 忽略下载的大模型文件
+app/models/*
+!app/models/.gitkeep
+
+# 忽略本地测试数据
+app/data/*
+!app/data/.gitkeep
+
+# 忽略运行输出结果
+app/out/*
+!app/out/.gitkeep
+
+# 忽略日志
+app/logs/*
+!app/logs/.gitkeep
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+
+# --- Temp ---
+*.log
+tmp/
+# 忽略 input 目录
+app/code/input/
+# 忽略 results 目录
+results

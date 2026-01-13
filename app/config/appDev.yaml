@@ -1,0 +1,4 @@
+# 开发环境基础配置
+server:
+  port: 8000
+  env: "dev"
