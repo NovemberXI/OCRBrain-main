@@ -1,4 +1,4 @@
-import json # Added for json output
+import json
 import os
 import argparse
 import sys
@@ -64,15 +64,28 @@ def main():
     ConfigTool.load("appDev.yaml")
     ConfigTool.load("models.yaml")
 
-    # 2. 获取 OCR 模型路径
-    ocrModelPath = ConfigTool.get("ocr.modelPath")
-    if not ocrModelPath or not os.path.exists(ocrModelPath):
-        LogTool.error(f"OCR model path not found or invalid: {ocrModelPath}. Please download the model weights and update config/models.yaml.")
-        return
+    # 2. 获取 OCR 模型路径和下载 URL
+    modelDirPath = ConfigTool.get("ocr.modelPath") # From models.yaml: "app/code/data/"
+    downloadUrl = ConfigTool.get("ocr.downloadUrl") # From models.yaml: "https://huggingface.co/.../model.safetensors?download=true"
+    
+    if not modelDirPath or not downloadUrl:
+        LogTool.error("OCR 模型路径或下载URL未在 config/models.yaml 中配置。")
+        sys.exit(1)
+    
+    # 构造完整的模型文件路径
+    # downloadUrl 格式为 https://.../model.safetensors?download=true
+    # 需要提取出 model.safetensors
+    fileName = os.path.basename(downloadUrl.split('?')[0])
+    modelFilePath = os.path.join(modelDirPath, fileName) # e.g., "app/code/data/model.safetensors"
+
+    # 确保模型文件存在，如果不存在则尝试下载
+    if not FileTool.downloadFile(downloadUrl, modelFilePath):
+        LogTool.error("模型下载或验证失败，无法启动OCR服务。", None)
+        sys.exit(1)
 
     # 3. 初始化 OCR 服务
-    LogTool.info(f"Initializing OCR Service with model: {ocrModelPath}")
-    ocrService = OcrService(ocrModelPath)
+    LogTool.info(f"Initializing OCR Service with model directory: {modelDirPath}")
+    ocrService = OcrService(modelDirPath) # 传递模型目录路径
     LogTool.info("OCR Service initialized successfully.")
 
     # 4. 准备文件列表

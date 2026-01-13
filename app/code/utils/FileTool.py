@@ -2,9 +2,14 @@ import os
 import json
 import fitz # PyMuPDF
 from PIL import Image
+import requests # 导入 requests 库
 from utils.LogTool import LogTool
 
 class FileTool:
+    @staticmethod
+    def exists(filePath):
+        return os.path.exists(filePath)
+
     @staticmethod
     def ensureDir(filePath):
         """
@@ -57,3 +62,36 @@ class FileTool:
             LogTool.error(f"Failed to convert PDF to image for {pdfPath}: {e}")
         return images
 
+    @staticmethod
+    def downloadFile(url, destinationPath):
+        # Create directory if it doesn't exist
+        os.makedirs(os.path.dirname(destinationPath), exist_ok=True)
+
+        if FileTool.exists(destinationPath):
+            LogTool.info(f"文件已存在: {destinationPath}")
+            return True
+
+        LogTool.info(f"开始从 {url} 下载文件到 {destinationPath}...")
+        try:
+            response = requests.get(url, stream=True)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
+
+            # total_size = int(response.headers.get('content-length', 0)) # 暂时不显示进度条
+            # downloaded_size = 0
+
+            with open(destinationPath, 'wb') as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk: # filter out keep-alive new chunks
+                        f.write(chunk)
+                        # downloaded_size += len(chunk)
+                        # if total_size:
+                        #     progress = (downloaded_size / total_size) * 100
+                        #     LogTool.info(f"下载进度: {progress:.2f}%")
+            LogTool.info(f"文件下载成功: {destinationPath}")
+            return True
+        except requests.exceptions.RequestException as e:
+            LogTool.error(f"下载文件失败: {e}", e)
+            return False
+        except Exception as e:
+            LogTool.error(f"处理下载文件时发生未知错误: {e}", e)
+            return False
