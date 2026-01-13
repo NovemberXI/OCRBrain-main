@@ -145,8 +145,8 @@ python app/code/main.py -i "app/code/input/document.pdf"
 # 结果将保存到项目根目录的 out/document.pdf.json
 
 # 指定输出目录
-python app/code/main.py -i app/code/input/何子烽-第一师范.pdf -o results
-# 结果将保存到 results/何子烽-第一师范.pdf.json
+python app/code/main.py -i app/code/input/1.pdf -o results
+# 结果将保存到 results/1.pdf.json
 ```
 
 **场景 C: 对目录下的多个文件执行 OCR**
